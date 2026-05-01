@@ -3,7 +3,8 @@
   padding: 0;
   box-sizing: border-box;
 }
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -99,7 +100,7 @@ body {
 .btn-custom {
   padding: 12px;
 
-  background: linear-gradient(to right, #4ade80, #056948);
+  background: linear-gradient(to right, #55af76, #0e865e);
   color: white;
 
   border: 1px solid #ccc;
