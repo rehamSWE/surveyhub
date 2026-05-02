@@ -17,7 +17,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  font-family: sans-serif;
+  font-family: Arial;
 }
 
 /* خلفية الجوال */
@@ -39,7 +39,7 @@ body {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 20px;
   padding: 30px;
-  width: 100%;
+  width: 90%;
   max-width: 400px;
   color: white;
 }
@@ -59,14 +59,15 @@ body {
 
 /* النص */
 .main-text {
-  font-size: 22px;
+  font-size: 1.4rem;
   font-weight: bold;
-  line-height: 1.8;
+  line-height: 1.4;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 /* input */
 .input-custom {
-  padding: 12px;
+  padding: 10px;
 
   text-align: center;
   direction: ltr;
@@ -78,7 +79,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 25px;
 
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 2px;
 }
 
@@ -98,7 +99,7 @@ body {
 
 /* الزر */
 .btn-custom {
-  padding: 12px;
+  padding: 10px;
 
   background: linear-gradient(to right, #55af76, #0e865e);
   color: white;
