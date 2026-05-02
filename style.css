@@ -67,7 +67,7 @@ body {
 
 /* input */
 .input-custom {
-  padding: 10px;
+  padding: 9px;
 
   text-align: center;
   direction: ltr;
@@ -79,7 +79,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 25px;
 
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 2px;
 }
 
@@ -99,7 +99,7 @@ body {
 
 /* الزر */
 .btn-custom {
-  padding: 10px;
+  padding: 9px;
 
   background: linear-gradient(to right, #55af76, #0e865e);
   color: white;
@@ -108,7 +108,7 @@ body {
   border-radius: 25px;
 
   font-weight: bold;
-  font-size: 16px;
+  font-size: 15px;
   transition: 0.2s;
 }
 
