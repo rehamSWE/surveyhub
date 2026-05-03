@@ -8,7 +8,7 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 زر المتابعة (تعديل مهم هنا)
+// 🔘 زر المتابعة
 const button = document.getElementById("checkBtn");
 const message = document.getElementById("message");
 
@@ -25,50 +25,76 @@ button.addEventListener("click", () => {
   message.style.color = "yellow";
   message.textContent = "جاري تحديد الموقع...";
 
-  // 2️⃣ تحقق من الموقع
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-
-        const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
-
-        if (distance <= allowedRadius) {
-          message.style.color = "lightgreen";
-          message.textContent = "تم التحقق بنجاح";
-
-          // 🔗 رابط الاستبيان
-          window.location.href = "https://example.com";
-        } else {
-          message.style.color = "red";
-          message.textContent = "أنت خارج النطاق المسموح";
-        }
-      },
-      (error) => {
-        message.style.color = "red";
-
-        if (error.code === 1) {
-          message.textContent = "تم رفض إذن الموقع ❌";
-        } else if (error.code === 2) {
-          message.textContent = "الموقع غير متوفر";
-        } else if (error.code === 3) {
-          message.textContent = "انتهى وقت تحديد الموقع";
-        } else {
-          message.textContent = "لا يمكن تحديد موقعك";
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
-    );
-  } else {
+  // 2️⃣ تحقق من دعم الموقع
+  if (!navigator.geolocation) {
     message.style.color = "red";
-    message.textContent = "المتصفح لا يدعم الموقع";
+    message.textContent = "المتصفح لا يدعم تحديد الموقع";
+    return;
+  }
+
+  // 🔍 تحقق من حالة الإذن قبل الطلب
+  if (navigator.permissions) {
+    navigator.permissions.query({ name: "geolocation" }).then((permission) => {
+
+      if (permission.state === "denied") {
+        message.style.color = "red";
+        message.textContent = "📍 يرجى تفعيل الموقع من إعدادات المتصفح";
+        return;
+      }
+
+      // إذا مسموح أو أول مرة
+      getUserLocation();
+
+    }).catch(() => {
+      // fallback لو المتصفح ما يدعم permissions
+      getUserLocation();
+    });
+  } else {
+    getUserLocation();
   }
 });
+
+
+// 📍 دالة جلب الموقع (نفس منطقك بدون تغيير)
+function getUserLocation() {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+
+      const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
+
+      if (distance <= allowedRadius) {
+        message.style.color = "lightgreen";
+        message.textContent = "تم التحقق بنجاح";
+
+        // 🔗 رابط الاستبيان
+        window.location.href = "https://example.com";
+      } else {
+        message.style.color = "red";
+        message.textContent = "أنت خارج النطاق المسموح";
+      }
+    },
+    (error) => {
+      message.style.color = "red";
+
+      if (error.code === 1) {
+        message.textContent = "تم رفض إذن الموقع ❌";
+      } else if (error.code === 2) {
+        message.textContent = "الموقع غير متوفر";
+      } else if (error.code === 3) {
+        message.textContent = "انتهى وقت تحديد الموقع";
+      } else {
+        message.textContent = "لا يمكن تحديد موقعك";
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    }
+  );
+}
 
 
 // 📐 حساب المسافة
