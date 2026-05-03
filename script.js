@@ -8,14 +8,41 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 زر المتابعة
+// 🔘 الأزرار
 const button = document.getElementById("checkBtn");
+const locationBtn = document.getElementById("locationBtn");
 const message = document.getElementById("message");
 
+
+// 🔥 زر تفعيل الموقع (حل Safari)
+locationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    message.style.color = "red";
+    message.textContent = "المتصفح لا يدعم الموقع";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    () => {
+      message.style.color = "lightgreen";
+      message.textContent = "تم تفعيل الموقع ✔";
+
+      // إخفاء الزر بعد التفعيل
+      locationBtn.style.display = "none";
+    },
+    () => {
+      message.style.color = "red";
+      message.textContent = "يرجى السماح بالوصول للموقع 📍";
+    }
+  );
+});
+
+
+// 🔘 زر المتابعة
 button.addEventListener("click", () => {
   const userCode = document.getElementById("codeInput").value.trim();
 
-  // 1️⃣ تحقق من الكود
+  // تحقق الكود
   if (userCode !== correctCode) {
     message.style.color = "red";
     message.textContent = "رمز التحقق غير صحيح";
@@ -23,16 +50,8 @@ button.addEventListener("click", () => {
   }
 
   message.style.color = "yellow";
-  message.textContent = "جاري تحديد الموقع...";
+  message.textContent = "جاري التحقق من الموقع...";
 
-  // 2️⃣ تحقق من دعم الموقع
-  if (!navigator.geolocation) {
-    message.style.color = "red";
-    message.textContent = "المتصفح لا يدعم تحديد الموقع";
-    return;
-  }
-
-  // 🔥 طلب الموقع مباشرة (بدون permissions API)
   getUserLocation();
 });
 
@@ -50,7 +69,6 @@ function getUserLocation() {
         message.style.color = "lightgreen";
         message.textContent = "تم التحقق بنجاح";
 
-        // 🔗 رابط الاستبيان
         window.location.href = "https://example.com";
       } else {
         message.style.color = "red";
@@ -61,19 +79,10 @@ function getUserLocation() {
       message.style.color = "red";
 
       if (error.code === 1) {
-        message.textContent = "📍 يرجى السماح بالوصول للموقع";
-      } else if (error.code === 2) {
-        message.textContent = "الموقع غير متوفر";
-      } else if (error.code === 3) {
-        message.textContent = "انتهى وقت تحديد الموقع";
+        message.textContent = "📍 يرجى تفعيل الموقع أولاً";
       } else {
         message.textContent = "تعذر تحديد الموقع";
       }
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
     }
   );
 }
