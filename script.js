@@ -8,37 +8,10 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 الأزرار
+// 🔘 زر المتابعة
 const button = document.getElementById("checkBtn");
-const locationBtn = document.getElementById("locationBtn");
 const message = document.getElementById("message");
 
-
-// 🔥 زر تفعيل الموقع (حل Safari)
-locationBtn.addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    message.style.color = "red";
-    message.textContent = "المتصفح لا يدعم الموقع";
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    () => {
-      message.style.color = "lightgreen";
-      message.textContent = "تم تفعيل الموقع ✔";
-
-      // إخفاء الزر بعد التفعيل
-      locationBtn.style.display = "none";
-    },
-    () => {
-      message.style.color = "red";
-      message.textContent = "يرجى السماح بالوصول للموقع 📍";
-    }
-  );
-});
-
-
-// 🔘 زر المتابعة
 button.addEventListener("click", () => {
   const userCode = document.getElementById("codeInput").value.trim();
 
@@ -50,14 +23,9 @@ button.addEventListener("click", () => {
   }
 
   message.style.color = "yellow";
-  message.textContent = "جاري التحقق من الموقع...";
+  message.textContent = "جاري تحديد الموقع...";
 
-  getUserLocation();
-});
-
-
-// 📍 دالة جلب الموقع
-function getUserLocation() {
+  // 🔥 الطلب المباشر (مهم جدًا)
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLat = position.coords.latitude;
@@ -79,13 +47,18 @@ function getUserLocation() {
       message.style.color = "red";
 
       if (error.code === 1) {
-        message.textContent = "📍 يرجى تفعيل الموقع أولاً";
+        message.textContent = "📍 تأكد من تفعيل الموقع من إعدادات Safari";
       } else {
         message.textContent = "تعذر تحديد الموقع";
       }
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
     }
   );
-}
+});
 
 
 // 📐 حساب المسافة
