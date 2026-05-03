@@ -32,30 +32,12 @@ button.addEventListener("click", () => {
     return;
   }
 
-  // 🔍 تحقق من حالة الإذن قبل الطلب
-  if (navigator.permissions) {
-    navigator.permissions.query({ name: "geolocation" }).then((permission) => {
-
-      if (permission.state === "denied") {
-        message.style.color = "red";
-        message.textContent = "📍 يرجى تفعيل الموقع من إعدادات المتصفح";
-        return;
-      }
-
-      // إذا مسموح أو أول مرة
-      getUserLocation();
-
-    }).catch(() => {
-      // fallback لو المتصفح ما يدعم permissions
-      getUserLocation();
-    });
-  } else {
-    getUserLocation();
-  }
+  // 🔥 طلب الموقع مباشرة (بدون permissions API)
+  getUserLocation();
 });
 
 
-// 📍 دالة جلب الموقع (نفس منطقك بدون تغيير)
+// 📍 دالة جلب الموقع
 function getUserLocation() {
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -79,13 +61,13 @@ function getUserLocation() {
       message.style.color = "red";
 
       if (error.code === 1) {
-        message.textContent = "تم رفض إذن الموقع ❌";
+        message.textContent = "📍 يرجى السماح بالوصول للموقع";
       } else if (error.code === 2) {
         message.textContent = "الموقع غير متوفر";
       } else if (error.code === 3) {
         message.textContent = "انتهى وقت تحديد الموقع";
       } else {
-        message.textContent = "لا يمكن تحديد موقعك";
+        message.textContent = "تعذر تحديد الموقع";
       }
     },
     {
