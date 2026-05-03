@@ -8,10 +8,42 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 زر المتابعة
+// 🔘 الأزرار
 const button = document.getElementById("checkBtn");
+const locationBtn = document.getElementById("locationBtn");
 const message = document.getElementById("message");
 
+
+// 🔥 زر تفعيل الموقع
+locationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    message.style.color = "red";
+    message.textContent = "المتصفح لا يدعم تحديد الموقع";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    () => {
+      message.style.color = "lightgreen";
+      message.textContent = "تم تفعيل الموقع بنجاح ✔";
+      locationBtn.style.display = "none";
+    },
+    () => {
+      message.style.color = "red";
+      message.innerHTML = `
+      📍 لا يمكن تفعيل الموقع <br><br>
+      يرجى السماح بالوصول من إعدادات المتصفح <br><br>
+      <small>
+      لمستخدمي iPhone:<br>
+      اضغط على (aA) أعلى الصفحة → إعدادات الموقع → الموقع → سماح
+      </small>
+      `;
+    }
+  );
+});
+
+
+// 🔘 زر المتابعة
 button.addEventListener("click", () => {
   const userCode = document.getElementById("codeInput").value.trim();
 
@@ -22,10 +54,9 @@ button.addEventListener("click", () => {
     return;
   }
 
-  message.style.color = "yellow";
-  message.textContent = "جاري تحديد الموقع...";
+  message.style.color = "#ffd166";
+  message.textContent = "يرجى السماح بالوصول للموقع عند الطلب...";
 
-  // 🔥 الطلب المباشر (مهم جدًا)
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLat = position.coords.latitude;
@@ -47,15 +78,17 @@ button.addEventListener("click", () => {
       message.style.color = "red";
 
       if (error.code === 1) {
-        message.textContent = "📍 تأكد من تفعيل الموقع من إعدادات Safari";
+        message.innerHTML = `
+        📍 لا يمكن إتمام التحقق بدون تفعيل الموقع <br><br>
+        يرجى السماح بالوصول من إعدادات المتصفح <br><br>
+        <small>
+        لمستخدمي iPhone:<br>
+        اضغط على (aA) أعلى الصفحة → إعدادات الموقع → الموقع → سماح
+        </small>
+        `;
       } else {
         message.textContent = "تعذر تحديد الموقع";
       }
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
     }
   );
 });
