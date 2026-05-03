@@ -1,15 +1,15 @@
 // 🔑 الكود الصحيح
-const correctCode = "12345"; // 👈 غيريه براحتك
+const correctCode = "12345";
 
-// 📍 إحداثيات الموقع المسموح (مثال)
+// 📍 إحداثيات حفر الباطن
 const allowedLat = 28.4328;
 const allowedLng = 45.9706;
 
-// 📏 نصف القطر بالمتر (مثلاً 500 متر)
+// 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 زر المتابعة
-const button = document.querySelector(".btn-custom");
+// 🔘 زر المتابعة (تعديل مهم هنا)
+const button = document.getElementById("checkBtn");
 const message = document.getElementById("message");
 
 button.addEventListener("click", () => {
@@ -21,6 +21,9 @@ button.addEventListener("click", () => {
     message.textContent = "رمز التحقق غير صحيح";
     return;
   }
+
+  message.style.color = "yellow";
+  message.textContent = "جاري تحديد الموقع...";
 
   // 2️⃣ تحقق من الموقع
   if (navigator.geolocation) {
@@ -35,16 +38,30 @@ button.addEventListener("click", () => {
           message.style.color = "lightgreen";
           message.textContent = "تم التحقق بنجاح";
 
-          // 🔗 هنا تحطين رابط الاستبيان لاحقًا
+          // 🔗 رابط الاستبيان
           window.location.href = "https://example.com";
         } else {
           message.style.color = "red";
           message.textContent = "أنت خارج النطاق المسموح";
         }
       },
-      () => {
+      (error) => {
         message.style.color = "red";
-        message.textContent = "لا يمكن تحديد موقعك";
+
+        if (error.code === 1) {
+          message.textContent = "تم رفض إذن الموقع ❌";
+        } else if (error.code === 2) {
+          message.textContent = "الموقع غير متوفر";
+        } else if (error.code === 3) {
+          message.textContent = "انتهى وقت تحديد الموقع";
+        } else {
+          message.textContent = "لا يمكن تحديد موقعك";
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       }
     );
   } else {
@@ -54,9 +71,9 @@ button.addEventListener("click", () => {
 });
 
 
-// 📐 حساب المسافة (Haversine Formula)
+// 📐 حساب المسافة
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3; // متر
+  const R = 6371e3;
   const φ1 = lat1 * Math.PI/180;
   const φ2 = lat2 * Math.PI/180;
   const Δφ = (lat2 - lat1) * Math.PI/180;
