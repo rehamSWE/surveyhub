@@ -1,4 +1,4 @@
-// 🔑 الكود الصحيح
+// 🔑 رمز التحقق
 const correctCode = "12345";
 
 // 📍 إحداثيات حفر الباطن
@@ -8,66 +8,66 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 زر المتابعة (تعديل مهم هنا)
+// 🔘 العناصر
 const button = document.getElementById("checkBtn");
 const message = document.getElementById("message");
 
 button.addEventListener("click", () => {
   const userCode = document.getElementById("codeInput").value.trim();
 
-  // 1️⃣ تحقق من الكود
+  // 1️⃣ التحقق من الرمز
   if (userCode !== correctCode) {
-    message.style.color = "red";
-    message.textContent = "رمز التحقق غير صحيح";
+    message.style.color = "#dc3545";
+    message.textContent = "رمز التحقق غير صحيح. يرجى التأكد وإعادة المحاولة.";
     return;
   }
 
-  message.style.color = "yellow";
-  message.textContent = "جاري تحديد الموقع...";
+  message.style.color = "#ffc107";
+  message.textContent = "جارٍ التحقق من الموقع...";
 
-  // 2️⃣ تحقق من الموقع
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-
-        const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
-
-        if (distance <= allowedRadius) {
-          message.style.color = "lightgreen";
-          message.textContent = "تم التحقق بنجاح";
-
-          // 🔗 رابط الاستبيان
-          window.location.href = "https://example.com";
-        } else {
-          message.style.color = "red";
-          message.textContent = "أنت خارج النطاق المسموح";
-        }
-      },
-      (error) => {
-        message.style.color = "red";
-
-        if (error.code === 1) {
-          message.textContent = "تم رفض إذن الموقع ❌";
-        } else if (error.code === 2) {
-          message.textContent = "الموقع غير متوفر";
-        } else if (error.code === 3) {
-          message.textContent = "انتهى وقت تحديد الموقع";
-        } else {
-          message.textContent = "لا يمكن تحديد موقعك";
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      },
-    );
-  } else {
-    message.style.color = "red";
-    message.textContent = "المتصفح لا يدعم الموقع";
+  // 2️⃣ التحقق من دعم الموقع
+  if (!navigator.geolocation) {
+    message.style.color = "#dc3545";
+    message.textContent = "هذا المتصفح لا يدعم خدمة تحديد الموقع.";
+    return;
   }
+
+  // 3️⃣ طلب الموقع
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+
+      const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
+
+      if (distance <= allowedRadius) {
+        message.style.color = "#198754";
+        message.textContent = "تم التحقق بنجاح.";
+
+        window.location.href = "https://example.com";
+      } else {
+        message.style.color = "#dc3545";
+        message.textContent =
+          "عذرًا، الوصول متاح فقط ضمن النطاق الجغرافي المحدد.";
+      }
+    },
+    (error) => {
+      message.style.color = "#dc3545";
+
+      if (error.code === 1) {
+        message.textContent =
+          "تعذر الوصول إلى الموقع. يرجى التأكد من تفعيل خدمة الموقع ثم إعادة المحاولة.";
+      } else if (error.code === 2) {
+        message.textContent = "تعذر تحديد الموقع. يرجى المحاولة لاحقًا.";
+      } else {
+        message.textContent = "حدث خطأ أثناء تحديد الموقع.";
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+    },
+  );
 });
 
 // 📐 حساب المسافة
