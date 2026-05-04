@@ -13,7 +13,7 @@ body {
 }
 
 body {
-  min-height: 100dvh; /* 🔥 الحل */
+  min-height: 100dvh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -65,41 +65,10 @@ body {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
-/* input */
-.input-custom {
-  padding: 9px;
-
-  text-align: center;
-  direction: ltr;
-  unicode-bidi: plaintext;
-
-  color: white !important;
-  background-color: transparent !important;
-
-  border: 1px solid #ccc;
-  border-radius: 25px;
-
-  font-size: 14px;
-  letter-spacing: 2px;
-}
-
-.input-custom::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.input-custom:focus {
-  background-color: transparent !important;
-  color: white !important;
-
-  border-color: #ccc;
-  outline: none;
-
-  box-shadow: none !important;
-}
-
 /* الزر */
 .btn-custom {
-  padding: 9px;
+  padding: 8px;
+  width: 200px;
 
   background: linear-gradient(to right, #55af76, #0e865e);
   color: white;
@@ -121,9 +90,8 @@ body {
   transform: scale(0.95);
 }
 
-
 .info-text {
   font-size: 14px;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
 }
