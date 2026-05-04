@@ -1,27 +1,29 @@
-// 🔑 رمز التحقق
+//  code
 const correctCode = "12345";
 
-// 📍 إحداثيات حفر الباطن
-const allowedLat = 28.4328;
-const allowedLng = 45.9706;
-
-// 📏 نصف القطر
-const allowedRadius = 10000;
+// 🔥 النطاق الجديد (Polygon)
+const polygon = [
+  { lat: 28.430263, lng: 45.974300 },
+  { lat: 28.431594, lng: 45.983996 },
+  { lat: 28.420405, lng: 45.987023 },
+  { lat: 28.419397, lng: 45.975896 }
+];
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 🔢 يسمح بالأرقام فقط
+
+  // only numbers  
   const codeInput = document.getElementById("codeInput");
 
   codeInput.addEventListener("input", () => {
     codeInput.value = codeInput.value.replace(/\D/g, "");
   });
 
-  // 🔘 العناصر
+  //  items
   const button = document.getElementById("checkBtn");
   const message = document.getElementById("message");
 
   button.addEventListener("click", () => {
-    const userCode = codeInput.value.trim(); // 🔥 استخدمناه مباشرة
+    const userCode = codeInput.value.trim();
 
     // التحقق من الرمز
     if (userCode !== correctCode) {
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 🔥 الرسالة
+    //  message
     message.style.color = "#ffc107";
     message.textContent = "جارٍ تحديد الموقع .. يرجى السماح بالوصول عند الطلب";
 
@@ -45,9 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const userLat = position.coords.latitude;
         const userLng = position.coords.longitude;
 
-        const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
-
-        if (distance <= allowedRadius) {
+        // 🔥 التحقق الجديد (Polygon)
+        if (isPointInPolygon(userLat, userLng, polygon)) {
           message.style.color = "#198754";
           message.textContent = "تم التحقق بنجاح.";
 
@@ -74,12 +75,32 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         enableHighAccuracy: true,
         maximumAge: 0,
-      },
+      }
     );
   });
 });
 
-// 📐 حساب المسافة
+
+// 🔥 دالة التحقق داخل النطاق
+function isPointInPolygon(lat, lng, polygon) {
+  let inside = false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].lat, yi = polygon[i].lng;
+    const xj = polygon[j].lat, yj = polygon[j].lng;
+
+    const intersect =
+      ((yi > lng) !== (yj > lng)) &&
+      (lat < (xj - xi) * (lng - yi) / (yj - yi) + xi);
+
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+}
+
+
+// 📐 (باقي كما هو - ما حذفناه احتياط)
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371e3;
   const φ1 = (lat1 * Math.PI) / 180;
@@ -89,7 +110,8 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
   const a =
     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
