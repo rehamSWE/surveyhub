@@ -8,66 +8,75 @@ const allowedLng = 45.9706;
 // 📏 نصف القطر
 const allowedRadius = 10000;
 
-// 🔘 العناصر
-const button = document.getElementById("checkBtn");
-const message = document.getElementById("message");
+document.addEventListener("DOMContentLoaded", () => {
+  // 🔢 يسمح بالأرقام فقط
+  const codeInput = document.getElementById("codeInput");
 
-button.addEventListener("click", () => {
-  const userCode = document.getElementById("codeInput").value.trim();
+  codeInput.addEventListener("input", () => {
+    codeInput.value = codeInput.value.replace(/\D/g, "");
+  });
 
-  // 1️⃣ التحقق من الرمز
-  if (userCode !== correctCode) {
-    message.style.color = "#dc3545";
-    message.textContent = "رمز التحقق غير صحيح. يرجى التأكد وإعادة المحاولة.";
-    return;
-  }
+  // 🔘 العناصر
+  const button = document.getElementById("checkBtn");
+  const message = document.getElementById("message");
 
-  message.style.color = "#ffc107";
-  message.textContent = "جارٍ التحقق من الموقع...";
+  button.addEventListener("click", () => {
+    const userCode = codeInput.value.trim(); // 🔥 استخدمناه مباشرة
 
-  // 2️⃣ التحقق من دعم الموقع
-  if (!navigator.geolocation) {
-    message.style.color = "#dc3545";
-    message.textContent = "هذا المتصفح لا يدعم خدمة تحديد الموقع.";
-    return;
-  }
-
-  // 3️⃣ طلب الموقع
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const userLat = position.coords.latitude;
-      const userLng = position.coords.longitude;
-
-      const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
-
-      if (distance <= allowedRadius) {
-        message.style.color = "#198754";
-        message.textContent = "تم التحقق بنجاح.";
-
-        window.location.href = "https://example.com";
-      } else {
-        message.style.color = "#dc3545";
-        message.textContent =
-          "عذرًا، الوصول متاح فقط ضمن النطاق الجغرافي المحدد.";
-      }
-    },
-    (error) => {
+    // التحقق من الرمز
+    if (userCode !== correctCode) {
       message.style.color = "#dc3545";
+      message.textContent = "رمز التحقق غير صحيح. يرجى التأكد وإعادة المحاولة.";
+      return;
+    }
 
-      if (error.code === 1) {
-        message.textContent =
-          "تعذر الوصول إلى الموقع. يرجى التأكد من تفعيل خدمة الموقع ثم إعادة المحاولة.";
-      } else if (error.code === 2) {
-        message.textContent = "تعذر تحديد الموقع. يرجى المحاولة لاحقًا.";
-      } else {
-        message.textContent = "حدث خطأ أثناء تحديد الموقع.";
-      }
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 0,
-    },
-  );
+    // 🔥 الرسالة
+    message.style.color = "#ffc107";
+    message.textContent = "جارٍ تحديد الموقع .. يرجى السماح بالوصول عند الطلب";
+
+    if (!navigator.geolocation) {
+      message.style.color = "#dc3545";
+      message.textContent = "هذا المتصفح لا يدعم خدمة تحديد الموقع.";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        const distance = getDistance(userLat, userLng, allowedLat, allowedLng);
+
+        if (distance <= allowedRadius) {
+          message.style.color = "#198754";
+          message.textContent = "تم التحقق بنجاح.";
+
+          window.location.href =
+            "https://docs.google.com/forms/d/e/1FAIpQLSc7gTrd_dHVri96fGb5t63qB5ZesP4R5_n85YPxqLM54LnO5A/formResponse";
+        } else {
+          message.style.color = "#dc3545";
+          message.textContent =
+            "عذرًا، الوصول متاح فقط ضمن النطاق الجغرافي المحدد.";
+        }
+      },
+      (error) => {
+        message.style.color = "#dc3545";
+
+        if (error.code === 1) {
+          message.textContent =
+            "تعذر الوصول إلى الموقع. يرجى تفعيل خدمة الموقع ثم إعادة المحاولة.";
+        } else if (error.code === 2) {
+          message.textContent = "تعذر تحديد الموقع. يرجى المحاولة لاحقًا.";
+        } else {
+          message.textContent = "حدث خطأ أثناء تحديد الموقع.";
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+      },
+    );
+  });
 });
 
 // 📐 حساب المسافة
