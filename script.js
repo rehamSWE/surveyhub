@@ -1,7 +1,4 @@
-//  code
-const correctCode = "12345";
-
-// 🔥 النطاق الجديد (Polygon)
+// 🔥 النطاق (Polygon)
 const polygon = [
   { lat: 28.430263, lng: 45.974300 },
   { lat: 28.431594, lng: 45.983996 },
@@ -11,28 +8,12 @@ const polygon = [
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // only numbers  
-  const codeInput = document.getElementById("codeInput");
-
-  codeInput.addEventListener("input", () => {
-    codeInput.value = codeInput.value.replace(/\D/g, "");
-  });
-
-  //  items
   const button = document.getElementById("checkBtn");
   const message = document.getElementById("message");
 
   button.addEventListener("click", () => {
-    const userCode = codeInput.value.trim();
 
-    // التحقق من الرمز
-    if (userCode !== correctCode) {
-      message.style.color = "#dc3545";
-      message.textContent = "رمز التحقق غير صحيح. يرجى التأكد وإعادة المحاولة.";
-      return;
-    }
-
-    //  message
+    // 🔥 الرسالة
     message.style.color = "#ffc107";
     message.textContent = "جارٍ تحديد الموقع .. يرجى السماح بالوصول عند الطلب";
 
@@ -47,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const userLat = position.coords.latitude;
         const userLng = position.coords.longitude;
 
-        // 🔥 التحقق الجديد (Polygon)
+        // 🔥 التحقق من النطاق
         if (isPointInPolygon(userLat, userLng, polygon)) {
           message.style.color = "#198754";
           message.textContent = "تم التحقق بنجاح.";
@@ -97,23 +78,4 @@ function isPointInPolygon(lat, lng, polygon) {
   }
 
   return inside;
-}
-
-
-// 📐 (باقي كما هو - ما حذفناه احتياط)
-function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3;
-  const φ1 = (lat1 * Math.PI) / 180;
-  const φ2 = (lat2 * Math.PI) / 180;
-  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-  const a =
-    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) *
-    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
 }
